@@ -17,6 +17,7 @@ sql 이 문제 없이 잘 동작하는지 확인하는 방법
 SELECT VERSION(); 컨트롤 + enter (한 줄 실행) 으로 버전이 무사히 잘 나오면 잘 동작하는 중
 */
 
+
 SELECT VERSION();
 /*
 -- CREATE DATABASE : 데이터 베이스를 생성할 것인데
