@@ -241,4 +241,192 @@ FROM employees;
 -- EMPLOYEES 테이블에서 성이 '김'씨인 사원의 사번, 이름 조회
 SELECT emp_id, full_name
 FROM employees
-WHRER frist_name LIKE '김%';
+WHERE first_name LIKE '김%';
+
+-- EMPLOYEES 테이블에서 full_name 이름에 '민'이 포함되는 사원의 사번, 이름 조회
+SELECT emp_id, full_name
+FROM employees
+WHERE full_name LIKE '%민%';
+
+SELECT * FROM employees;
+
+-- EMPLOYEES 테이블에서 전화번호가 02으로 시작하는 사원의 이름, 전화번호 조회
+SELECT full_name, phone
+FROM employees
+WHERE phone LIKE '02%';
+
+-- EMPLOYEES 테이블에서 EMAIL 의 아이디(@) 기준 3글자인 사원의 이름, 이메일 조회
+SELECT full_name, email
+FROM employees
+WHERE email LIKE '___@%';
+
+-- EMPLOYEES 테이블에서 사원코드가 EMP 로 시작하고 EMP 포함해서 총 6자리인 사원 조회
+SELECT emp_code, full_name, email
+FROM employees
+WHERE emp_code LIKE 'EMP___';
+
+
+/****************************
+WHERE 절
+AND OR BETWEEN IN()
+****************************/
+
+-- EMPLOYEE 테이블에서
+-- 급여가 4000만 이상, 7000만 이하인 사원의 사번, 이름, 급여 조회
+-- emp_id, full_name, salary
+-- AND BETWEEN 구문 이용한 두 가지 SQL 문 작성하기
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary >= 40000000 AND salary <= 70000000;
+
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary BETWEEN 40000000 AND 70000000;
+
+
+-- EMPLOYEE 테이블에서
+-- 급여가 4000만 미만 또는 8000만 초과인 사원의 사번, 이름, 급여 조회
+-- emp_id, full_name, salary
+-- OR	NOT BETWEEN 구문 이용한두 가지 SQL 문 작성하기
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary < 40000000 OR salary > 80000000;
+
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary  NOT BETWEEN 40000000 AND 80000000;
+
+
+-- BETWEEN 구문 이용해서
+-- EMPLOYEE 테이블에서
+-- 입사일(hire_data)이 2020-01-01 부터 2020-12-31 사이인
+-- 사원의 이름, 입사일 조회
+-- full_name, hire_data
+SELECT full_name, hire_date
+FROM employees
+WHERE hire_date BETWEEN '2020-01-01' AND '2020-12-31';
+
+
+-- BETWEEN 구문 이용해서
+-- EMPLOYEES 테이블에서
+-- 생년월일이 1980년대인 사원 조회
+-- emp_id, full_name, date_of_birth
+SELECT emp_id, full_name, date_of_birth
+FROM employees
+WHERE date_of_birth BETWEEN '1980-01-01' AND '1989-12-31';
+
+
+-- EMPLOYEE 테이블에서
+-- 부서 ID 가 4 인 사원 중
+-- 급여가 4000만 이상, 7000만 이하인 사원의 사번, 이름, 급여조회
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE dept_id = 4 AND (salary BETWEEN 40000000 AND 70000000);
+
+
+-- ORDER 절 WHERE 응용 IN() 절 JOIN 문
+
+-- EMPLOYEES 테이블에서
+-- 부서코드가 2, 4, 5 인 사원의
+-- 이름, 부서코드, 급여 조회
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id = 2
+OR	  dept_id = 4
+OR    dept_id = 5;
+
+-- 컬럼의 값이 () 내 값과 일치하면 true 
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id IN(2, 4, 5);
+
+-- EMPLOYEES 테이블에서
+-- 부서코드가 2, 4, 5 인 사원을 제외하고
+-- 이름, 부서코드, 급여 조회
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id NOT IN(2, 4, 5);
+-- -> dept_id 가 NULL 인 사람들 또한 제외된 후 조회
+
+-- NULL 값을 가지면서 부서코드가 2, 4, 5 를 제외한
+-- 모든 사원들을 결과에 추가하는 구문
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id NOT IN(2, 4, 5)
+OR dept_id IS NULL;
+
+SELECT *
+FROM employees;
+
+
+/*******************************
+ORDER BY 절
+- SELECT 문의 조회 결과(RESULT SET)를 정렬할 때 사용하는 구문
+
+SELECT 구문에서 가장 마지막에 해석됨 (무조건)
+[작성법]
+SELECT 컬럼명 AS 별칭, 컬럼명, 컬럼명, ...
+FROM 테이블명
+WHERE 조건식
+ORDER BY 컬럼명 | 별칭 | 컬럼 순서[오름/내림 차순]
+	* 컬럼이 오른차순인지 내림차순인지 작성되지 않았을 때는 기본으로 오름차순 정렬
+    * ASC : 오름차순(=ascending)
+    * DESC : 내림차순(deascending)
+*******************************/
+
+-- employees 테이블에서 모든 사원의 이름, 급여 조회
+-- 단, 급여 오름차순으로 정렬
+SELECT full_name, salary
+FROM employees
+ORDER BY salary;
+
+SELECT full_name, salary
+FROM employees
+ORDER BY salary ASC; -- ASC 기본값
+
+SELECT full_name, salary
+FROM employees
+ORDER BY salary DESC;
+
+-- employees 테이블에서
+-- 급여가 300만원 이상, 600만원 이하인 사람의
+-- 사번, 이름, 급여를 이름 내림차순으로 조회
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary BETWEEN 30000000 AND 100000000
+ORDER BY full_name DESC;
+
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary BETWEEN 30000000 AND 100000000
+ORDER BY 2 DESC; -- 2번쨰 컬럼(full_name)으로 정렬된 형태
+
+/* ORDER BY 절 수식 적용해서 정렬 가능 */
+-- EMPLOYEES 테이블에서 이름, 연ㅂ오을 연봉 내림차순으로 조회
+SELECT full_name, salary * 12
+FROM employees
+ORDER BY salary * 12 DESC;
+
+SELECT full_name, salary * 12 AS 연봉
+FROM employees
+ORDER BY 연봉 DESC;
+
+SELECT full_name, salary * 12 AS 연봉
+FROM employees
+ORDER BY salary * 12 DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
