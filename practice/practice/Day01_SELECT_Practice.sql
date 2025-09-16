@@ -137,10 +137,7 @@ WHERE COACH_PROFESSOR_NO = "P001";
 -- 학과명, 분류, 개설여부를 조회하시오.
 SELECT DEPARTMENT_NAME AS 학과명, CATEGORY AS 분류, OPEN_YN AS 개설여부
 FROM department
-WHERE CAPACITY = "인문사회";
-
-SELECT *
-FROM department;
+WHERE CATEGORY = "인문사회";
 
 
 -- 문제 20 (보기만하기)
@@ -150,4 +147,3 @@ FROM department;
 SELECT STUDENT_NO AS 학번, STUDENT_NAME AS 이름, ENTRANCE_DATE AS 입학일
 FROM student
 WHERE STUDENT_NO LIKE '%A%';
-
