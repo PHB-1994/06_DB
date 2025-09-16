@@ -365,10 +365,10 @@ ORDER BY 절
 
 SELECT 구문에서 가장 마지막에 해석됨 (무조건)
 [작성법]
-SELECT 컬럼명 AS 별칭, 컬럼명, 컬럼명, ...
-FROM 테이블명
-WHERE 조건식
-ORDER BY 컬럼명 | 별칭 | 컬럼 순서[오름/내림 차순]
+3:SELECT 컬럼명 AS 별칭, 컬럼명, 컬럼명, ...
+1:FROM 테이블명
+2:WHERE 조건식
+4:ORDER BY 컬럼명 | 별칭 | 컬럼 순서[오름/내림 차순]
 	* 컬럼이 오른차순인지 내림차순인지 작성되지 않았을 때는 기본으로 오름차순 정렬
     * ASC : 오름차순(=ascending)
     * DESC : 내림차순(deascending)
@@ -376,24 +376,24 @@ ORDER BY 컬럼명 | 별칭 | 컬럼 순서[오름/내림 차순]
 
 -- employees 테이블에서 모든 사원의 이름, 급여 조회
 -- 단, 급여 오름차순으로 정렬
-SELECT full_name, salary
-FROM employees
-ORDER BY salary;
+/*2*/SELECT full_name, salary
+/*1*/FROM employees
+/*3*/ORDER BY salary; -- ASC 기본값
 
-SELECT full_name, salary
-FROM employees
-ORDER BY salary ASC; -- ASC 기본값
+/*2*/SELECT full_name, salary
+/*1*/FROM employees
+/*3*/ORDER BY salary ASC;
 
 SELECT full_name, salary
 FROM employees
 ORDER BY salary DESC;
 
 -- employees 테이블에서
--- 급여가 300만원 이상, 600만원 이하인 사람의
+-- 급여가 4000만원 이상, 10000만원 이하인 사람의
 -- 사번, 이름, 급여를 이름 내림차순으로 조회
 SELECT emp_id, full_name, salary
 FROM employees
-WHERE salary BETWEEN 30000000 AND 100000000
+WHERE salary BETWEEN 40000000 AND 100000000
 ORDER BY full_name DESC;
 
 SELECT emp_id, full_name, salary
@@ -415,14 +415,30 @@ SELECT full_name, salary * 12 AS 연봉
 FROM employees
 ORDER BY salary * 12 DESC;
 
+/* NULL 값 정렬 처리 */
+-- 기본적으로 NULL 값은 가장 작은 값으로 처리됨
+-- ASC : NULL 최상위 존재
+-- DESC : NULL 최하위 존재
+
+/*3*/SELECT full_name, dept_id AS 부서코드
+/*1*/FROM employees
+/*2*/WHERE dept_id = 4
+/*4*/ORDER BY 부서코드 DESC;
+
+/*3*/SELECT full_name, dept_id AS 부서코드
+/*1*/FROM employees
+/*2*/WHERE 부서코드 = 4
+/*4*/ORDER BY 부서코드 DESC;
+
+-- 모든 사원의 이름 전화번호를 phone 기준으로 오름차순 조회
 
 
-
-
-
-
-
-
+-- employees 테이블에서
+-- 이름, 부서ID, 급여 를
+-- 급여 내림차순 정렬
+SELECT full_name, emp_id, salary
+FROM employees
+ORDER BY salary DESC;
 
 
 
