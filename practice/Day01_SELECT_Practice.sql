@@ -66,7 +66,7 @@ FROM grade;
 -- 학번, 이름, 학과번호를 조회하시오.
 SELECT STUDENT_NO AS 학번, STUDENT_NAME AS 이름, DEPARTMENT_NO AS 학과번호
 FROM student
-WHERE ABSENCE_YN = "Y";
+WHERE ABSENCE_YN = Y;
 
 
 -- 문제 10
@@ -83,16 +83,14 @@ WHERE CAPACITY >= 25;
 SELECT STUDENT_NAME AS 이름, DEPARTMENT_NO AS 학과번호, STUDENT_ADDRESS AS 주소
 FROM student
 WHERE DEPARTMENT_NO != 001;
--- ===================================================================== 무조건 '' 사용??? ===================================
+
 
 -- 문제 12
 -- GRADE 테이블에서 성적(POINT)이 4.0 이상인 성적 데이터의 
 -- 학기번호, 과목번호, 학번, 성적을 조회하시오.
--- SELECT TERM_NO AS 학기번호, CLASS_NO AS 과목번호, STUDENT_NO AS 학번, POINT AS 성적
-SELECT *
+SELECT TERM_NO AS 학기번호, CLASS_NO AS 과목번호, STUDENT_NO AS 학번, POINT AS 성적
 FROM grade
 WHERE POINT >= 4.0;
--- ================================================== * 로 하면 null 값도 표시되는데 상관이 없는지?? ==============================
 
 
 -- 문제 13
@@ -111,11 +109,7 @@ LIKE '2005%';
 SELECT PROFESSOR_NO AS 교수번호, PROFESSOR_NAME AS 이름, DEPARTMENT_NO AS 학과번호
 FROM professor
 WHERE DEPARTMENT_NO IS NOT NULL;
--- WHERE DEPARTMENT_NO != NULL; 이거는 안되나??? ======================================================================
 
-SELECT PROFESSOR_NO AS 교수번호, PROFESSOR_NAME AS 이름, DEPARTMENT_NO AS 학과번호
-FROM professor
-WHERE DEPARTMENT_NO != 'null';
 
 -- 문제 15
 -- CLASS 테이블에서 과목유형(CLASS_TYPE)이 '전공필수'인 과목의 
