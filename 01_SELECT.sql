@@ -233,3 +233,12 @@ WHERE dept_id != 2;
 SELECT CONCAT(emp_id,full_name) as 사번이름연결
 FROM employees;
 
+
+/******************************
+           LIKE 절
+******************************/
+
+-- EMPLOYEES 테이블에서 성이 '김'씨인 사원의 사번, 이름 조회
+SELECT emp_id, full_name
+FROM employees
+WHRER frist_name LIKE '김%';
