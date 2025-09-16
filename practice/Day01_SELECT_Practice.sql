@@ -133,7 +133,7 @@ WHERE STUDENT_ADDRESS LIKE '서울시%';
 -- 학번, 과목번호, 성적을 조회하시오.
 SELECT STUDENT_NO AS 학번, CLASS_NO AS 과목번호, POINT AS 성적
 FROM grade
-WHERE POINT >= 3.0 AND POINT < 4.0;
+WHERE POINT >= 3.0 OR POINT < 4.0;
 
 
 -- 문제 18
