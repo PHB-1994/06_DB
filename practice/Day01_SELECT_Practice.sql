@@ -1,3 +1,12 @@
+/*
+1046 : 스키마 명칭을(=데이터베이스 조작할 수 있는 설계도) 선택하지 않음
+1. 스키마(=데이터베이스)가 만들어져 있는가? 없으면 CREATE DATABASE IF NOE EXISTS 데이터베이스명칭(=스키마명칭);
+2. 스키마(=데이터베이스)가 존재한다면 ? USE 데이터베이스명칭(=스키마명칭);
+
+USE database_name;
+Error Code: 1049. Unknown database 'database_name'
+*/
+
 -- 문제 1
 -- chun_university 데이터베이스의 STUDENT 테이블에서 
 -- 모든 학생의 학번(STUDENT_NO), 이름(STUDENT_NAME), 주소(STUDENT_ADDRESS)를 조회하시오.
@@ -20,20 +29,23 @@ FROM department;
 -- 문제 4
 -- STUDENT 테이블에서 모든 학생의 이름, 입학일, 입학일로부터 현재까지의 일수를 조회하시오.
 -- (컬럼명은 각각 '학생이름', '입학일', '재학일수'로 별칭 지정)
-SELECT STUDENT_NAME AS 학생이름, ENTRANCE_DATE AS 입학일, datediff(curdate(),ENTRANCE_DATE) AS 재학일수
+--			MySQL 자체적으로 개발자를 위해 만든 기능 DATEDIFF() : 현재 날짜와 입학일을 계산해서 재학일자를 알려줌
+SELECT STUDENT_NAME AS 학생이름, ENTRANCE_DATE AS `입학일`, DATEDIFF(NOW(),ENTRANCE_DATE) AS "재학일수"
 FROM student;
 
 
 -- 문제 5
 -- 현재 시간과 어제, 내일을 조회하시오.
 -- (컬럼명은 각각 '현재시간', '어제', '내일'로 별칭 지정)
+-- 가상테이블 : DUAL	DUmmy tAbLe
+-- DUMMY : 인간이나 실제 데이터 대신 사용되는 모형
 SELECT now() AS 현재시간, now() - INTERVAL 1 DAY AS 어제, now() + INTERVAL 1 DAY AS 내일;
 
 
 -- 문제 6
 -- STUDENT 테이블에서 학번과 이름을 연결하여 하나의 컬럼으로 조회하시오.
 -- (컬럼명은 '학번_이름'으로 별칭 지정)
-SELECT CONCAT(STUDENT_NO,STUDENT_NAME) AS 학번_이름
+SELECT CONCAT(STUDENT_NO, '_',STUDENT_NAME) AS 학번_이름
 FROM student;
 
 
@@ -71,14 +83,16 @@ WHERE CAPACITY >= 25;
 SELECT STUDENT_NAME AS 이름, DEPARTMENT_NO AS 학과번호, STUDENT_ADDRESS AS 주소
 FROM student
 WHERE DEPARTMENT_NO != 001;
-
+-- ===================================================================== 무조건 '' 사용??? ===================================
 
 -- 문제 12
 -- GRADE 테이블에서 성적(POINT)이 4.0 이상인 성적 데이터의 
 -- 학기번호, 과목번호, 학번, 성적을 조회하시오.
-SELECT TERM_NO AS 학기번호, CLASS_NO AS 과목번호, STUDENT_NO AS 학번, POINT AS 성적
+-- SELECT TERM_NO AS 학기번호, CLASS_NO AS 과목번호, STUDENT_NO AS 학번, POINT AS 성적
+SELECT *
 FROM grade
 WHERE POINT >= 4.0;
+-- ================================================== * 로 하면 null 값도 표시되는데 상관이 없는지?? ==============================
 
 
 -- 문제 13
@@ -86,7 +100,8 @@ WHERE POINT >= 4.0;
 -- 학번, 이름, 입학일을 조회하시오.
 SELECT STUDENT_NO AS 학원, STUDENT_NAME AS 이름, ENTRANCE_DATE AS 입학일
 FROM student
-WHERE ENTRANCE_DATE LIKE "2005%";
+WHERE ENTRANCE_DATE
+LIKE '2005%';
 
 
 -- 문제 14 (보기만하기)
@@ -96,8 +111,11 @@ WHERE ENTRANCE_DATE LIKE "2005%";
 SELECT PROFESSOR_NO AS 교수번호, PROFESSOR_NAME AS 이름, DEPARTMENT_NO AS 학과번호
 FROM professor
 WHERE DEPARTMENT_NO IS NOT NULL;
--- WHERE DEPARTMENT_NO != NULL; 이거는 안되나???
+-- WHERE DEPARTMENT_NO != NULL; 이거는 안되나??? ======================================================================
 
+SELECT PROFESSOR_NO AS 교수번호, PROFESSOR_NAME AS 이름, DEPARTMENT_NO AS 학과번호
+FROM professor
+WHERE DEPARTMENT_NO != 'null';
 
 -- 문제 15
 -- CLASS 테이블에서 과목유형(CLASS_TYPE)이 '전공필수'인 과목의 
@@ -129,7 +147,7 @@ WHERE POINT >= 3.0 AND POINT < 4.0;
 -- 학번, 이름, 학과번호를 조회하시오.
 SELECT STUDENT_NO AS 학번, STUDENT_NAME AS 이름, DEPARTMENT_NO AS 학과번호
 FROM student
-WHERE COACH_PROFESSOR_NO = "P001";
+WHERE COACH_PROFESSOR_NO = 'P001';
 
 
 -- 문제 19
@@ -137,7 +155,7 @@ WHERE COACH_PROFESSOR_NO = "P001";
 -- 학과명, 분류, 개설여부를 조회하시오.
 SELECT DEPARTMENT_NAME AS 학과명, CATEGORY AS 분류, OPEN_YN AS 개설여부
 FROM department
-WHERE CATEGORY = "인문사회";
+WHERE CATEGORY = '인문사회';
 
 
 -- 문제 20 (보기만하기)
