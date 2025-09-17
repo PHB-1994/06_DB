@@ -181,13 +181,11 @@ SELECT COUNT(*)
 FROM employees
 WHERE employment_status = 'Active';
 
+
 -- EMPLOYEES 테이블 부서 코드가 DEV 인 사원의 수
--- JOIN		ON
--- WHERE 	AND
 SELECT COUNT(*)
 FROM employees
-JOIN departments ON employees.dept_id = departments.dept_id
-WHERE employment_status = 'Active';
+JOIN departments ON employees.dept_id = departments.dept_id;
 
 
 -- 전화번호가 있는 사원 수 COUNT(*)
@@ -201,6 +199,13 @@ WHERE phone IS NOT NULL;
 SELECT COUNT(phone)
 FROM employees;
 
+-- WHERE 절로 변경해서 조회하기
+-- EMPLOYEES 테이블 부서 코드가 DEV 인 사원의 수
+SELECT COUNT(*)
+FROM employees e, departments d
+WHERE e.dept_id = d.dept_id;
+
+
 -- 테이블에 존재하는 부서코드의 수를 조회. dept_code 중복없이 조회
 -- JOIN departments dept_id
 SELECT COUNT(DISTINCT d.dept_id)
@@ -208,18 +213,9 @@ FROM employees e
 JOIN departments d ON e.dept_id = d.dept_id;
 
 
+-- EMPLOYEES 테이블에 존재하는 남자 사원의 수
+SELECT * FROM employees;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+SELECT COUNT(*) as '남자 사원의 수'
+FROM employees
+WHERE gender = 'M';
