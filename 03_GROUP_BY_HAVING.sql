@@ -6,8 +6,4 @@ SELECT 문 해석 순서
 3 : GROUP BY 그룹을 묶을 컬럼명
 4 : HVAING 그룹함수식 비교연산자 비교값
 6 : ORDER BY 컬럼명 | 별칭 | 컬럼순선 정렬방식[NULLS FIRST | LAST];
-
-
-
-
 */
