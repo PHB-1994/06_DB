@@ -6,13 +6,13 @@ FROM class;
 
 -- 문제 2
 -- GRADE 테이블의 모든 성적 데이터를 조회하시오.
-SELECT point
+SELECT *
 FROM grade;
 
 
 -- 문제 3
 -- CLASS_PROFESSOR 테이블에서 과목번호와 교수번호를 조회하시오.
-SELECT CLASS_NO, PROFESSOR_No
+SELECT CLASS_NO, PROFESSOR_NO
 FROM class_professor;
 
 
@@ -25,13 +25,13 @@ FROM professor;
 
 -- 문제 5
 -- DEPARTMENT 테이블에서 학과명과 정원을 연결하여 '학과명(정원명)' 형태로 조회하시오.
-SELECT CONCAT(DEPARTMENT_NAME,'(',CAPACITY,')')
+SELECT CONCAT(DEPARTMENT_NAME,'(',CAPACITY,'명)') AS '학과명(정원명)'
 FROM department;
 
 
 -- 문제 6
 -- 현재 날짜에서 7일 후, 30일 후, 365일 후를 조회하시오.
-SELECT NOW() + INTERVAL 7 DAY AS '현재날짜', NOW() + INTERVAL 30 DAY AS '30일 후',NOW() + INTERVAL 365 DAY AS '365일 후';
+SELECT  NOW() AS '현재 날짜', NOW() + INTERVAL 7 DAY AS '7일 후', NOW() + INTERVAL 30 DAY AS '30일 후',NOW() + INTERVAL 365 DAY AS '365일 후';
 
 
 -- 문제 7
@@ -42,7 +42,7 @@ FROM student;
 
 -- 문제 8
 -- PROFESSOR 테이블에서 교수명 앞에 '교수님'을 붙여서 조회하시오.
-SELECT CONCAT('교수님 ', PROFESSOR_NAME)
+SELECT CONCAT(PROFESSOR_NAME,'교수님')
 FROM professor;
 
 
