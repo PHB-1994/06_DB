@@ -134,7 +134,8 @@ FROM employees
 WHERE COUNT(*) >= 2; -- Error Code: 1111. Invalid use of group function
 -- 그룹 함수를 잘못 사용했을 때 나타나는 문제
 
--- dept_id 로 묶은 그룹에서 총 인원이 2명 이상인 부서 아이디만 조회
+-- dept_id 로 묶은 그룹에서 총 인원이
+-- 2명 이상인 부서 아이디만 조회
 SELECT dept_id, COUNT(*)
 FROM employees
 GROUP BY dept_id
@@ -152,12 +153,12 @@ HAVING AVG(salary) >= 50000000;
 GROPU BY HAVING = 함수(COUNT, AVG, SUM, MIN, MAX 등) 특정 그룹의 숫자 데이터를 활용해서 조건별로 조회할 때 사용
 */
 
--- 평균 급여가 7천만원 이상인 부서 조회
+-- 평균 급여가 8천만원 이상인 부서 조회
 -- dept_id, salary employees
 SELECT dept_id, FLOOR(AVG(salary))
 FROM employees
 GROUP BY dept_id
-HAVING AVG(salary) >= 70000000;
+HAVING AVG(salary) >= 80000000;
 
 -- 급여 총합이 1억 5천만원 이상인 부서 조회
 SELECT dept_id, SUM(salary)
@@ -233,6 +234,65 @@ SELECT category, AVG(delivery_fee) AS 평균배달비
 FROM stores
 WHERE delivery_fee IS NOT NULL
 GROUP BY category;
+
+# 실습문제
+-- from stores
+-- 평점임 4.5 이상인 가게들만 골라서 카테고리별 개수 구하기
+SELECT  category, COUNT(*)
+FROM stores
+WHERE rating >= 4.5 -- 치킨 카테고리에서 가게별로 4.5 이상인 가게들만 조회하기
+GROUP BY category;
+
+SELECT  category, COUNT(*)
+FROM stores
+GROUP BY category
+HAVING AVG(rating) >= 4.5; -- 카테고리별로 평점을 모은 후에 평점이 4.5 이상으로 그룹만 카테고리 조회
+/*
+1064  : , 가 포함되어 있다
+0	87	14:38:35	SELECT name, category, rating
+ FROM stores
+ WHERE rating >= 4.5
+ GROUP BY category, rating,name,
+ Error Code: 1064. You have an error in your SQL syntax;
+ check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 4	0.000 sec
+*/
+
+
+-- 배달비가 null 이 아닌 가게들만으로 카테고리별 평점 구하기,
+-- function count	round(avg(rating),2)
+SELECT category, count(*), round(avg(rating),2)
+FROM stores
+WHERE delivery_fee IS NOT NULL
+GROUP BY category;
+
+
+-- 가게가 3개 이상인 카테고리만 보기
+-- 개수를 내림차순 정렬
+SELECT category, COUNT(*)
+FROM stores
+GROUP BY category
+HAVING COUNT(*) >= 3
+ORDER BY COUNT(*) DESC;
+
+
+-- 평균 배달비가 3000원 이상인 카테고리 구하기
+SELECT category, ROUND(AVG(delivery_fee))
+FROM stores
+WHERE delivery_fee IS NOT NULL
+GROUP BY category
+HAVING AVG(delivery_fee) >= 3000
+ORDER BY AVG(delivery_fee);
+
+
+-- 가게별로 메뉴가 몇 개씩 존재하는지 조회
+-- 가게명, 카테고리 메뉴 개수 조회
+-- FROM stroes s, menus m
+SELECT s.name, s.category, COUNT(*) as 메뉴개수
+FROM stores s, menus m
+WHERE s.id = m.store_id
+GROUP BY s.name, s.category;
+
+
 
 
 

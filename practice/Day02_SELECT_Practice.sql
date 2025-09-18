@@ -1,6 +1,6 @@
 -- 문제 1
 -- CLASS 테이블에서 모든 과목의 과목번호, 과목명, 학과번호를 조회하시오.
-SELECT  CLASS_NO, CLASS_NAME,DEPARTMENT_NO
+SELECT  CLASS_NO, CLASS_NAME, DEPARTMENT_NO
 FROM class;
 
 
