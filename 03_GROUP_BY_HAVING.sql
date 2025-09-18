@@ -174,6 +174,7 @@ FROM employees E
 INNER JOIN  departments D ON E.dept_id = D.dept_id
 GROUP BY dept_name
 HAVING AVG(salary) >= 80000000;
+-- ==================================================================== 지정을 안해줘도 읽긴 하는데...? 조인으로 연결하게 되면 서로 찾는건지...? ===============
 
 SELECT D.dept_name, FLOOR(AVG(E.salary))
 FROM employees E, departments D
@@ -181,30 +182,64 @@ WHERE E.dept_id = D.dept_id
 GROUP BY D.dept_name
 HAVING AVG(E.salary) >= 80000000;
 
+SELECT dept_name, FLOOR(AVG(salary))
+FROM employees E, departments D
+WHERE D.dept_id = E.dept_id
+GROUP BY dept_name
+HAVING AVG(salary) >= 80000000;
+
+
+/***************************************************
+수업용_SCRIPT_2 를 활용하여 GROUP BY HAVING 실습하기
+기본 문법 순서
+SELECT 컬럼명, 집계함수()
+FROM 테이블이름
+WHERE 조건			-- 개별 행 하나씩에 대한 조건
+GROUP BY 컬럼명 	-- 그룹 만들기 (SELECT ORDER 에서 집계함수로 작성되지 않은 컬럼명칭 모두 작성)
+HAVING 집계조건 	-- 조회할 그룹에 대한 조건
+ORDER BY			-- 정렬 기준
+* 주의할 점 : 숫자 값에 NULL 이 존재한다면 WHERE 로 NULL 을 먼저 필터링 처리
+	WHERE 컬럼이름 IS NOT NULL
+	과 같이 NULL 이 존재하지 않는 데이터들을 통해서 조회
+-----------------------------
+집계함수
+COUNT(*) : 개수 세기
+AVG()	 : 합에 대한 평균
+MAX()	 : 최고로 높은 숫자
+MIN()	 : 최고로 낮은 숫자
+
+테이블 구조
+stores(가게 테이블)
+번호, 이름, 카테고리,   평점,  배달비
+id  , name, category, rating,  delivery_fee
+
+
+menus(메뉴 테이블)
+메뉴번호, 가게번호, 메뉴명,  가격, 인기메뉴여부
+id      , store_id,   name, price, is_popular
+***************************************************/
+
+SELECT * FROM stores;
+SELECT * FROM menus;
+-- stores 테이블에서
+-- 각 카테고리 별로 가게가 몇개씩 존재하는지 확인하기
+-- select category as 가게수
+SELECT category, COUNT(*) AS 가게수
+FROM stores
+GROUP BY category
+ORDER BY COUNT(*) DESC; -- COUNT(*) 내림차순 정렬
+
+
+-- stores 테이블에서
+-- 각 카테고리별 평균 배달비 구하기
+-- null 존재하는지 확인하고, null 이 아닌 배달비만 조회
+SELECT category, AVG(delivery_fee) AS 평균배달비
+FROM stores
+WHERE delivery_fee IS NOT NULL
+GROUP BY category;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-SELECT * FROM departments;
-
--- 부서에서 budget 평균이 30000000 이상인
--- 부서를 조회하여 부서코드를 오름차순으로 정렬
-
-SELECT dept_code, budget
-FROM departments
--- WHERE budget >= 30000000; -- 예산이 30000000 이상인 부서만 조회하겠다.
-GROUP BY dept_code
-HAVING AVG(budget) >= 30000000; -- 그룹 예산 평균이 30000000 이상인 부서만 조회
 
 
 
