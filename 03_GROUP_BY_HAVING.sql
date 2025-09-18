@@ -150,10 +150,49 @@ HAVING : 부서나 그룹 조건
 HAVING AVG(salary) >= 50000000;
 
 GROPU BY HAVING = 함수(COUNT, AVG, SUM, MIN, MAX 등) 특정 그룹의 숫자 데이터를 활용해서 조건별로 조회할 때 사용
-
-
-
 */
+
+-- 평균 급여가 7천만원 이상인 부서 조회
+-- dept_id, salary employees
+SELECT dept_id, FLOOR(AVG(salary))
+FROM employees
+GROUP BY dept_id
+HAVING AVG(salary) >= 70000000;
+
+-- 급여 총합이 1억 5천만원 이상인 부서 조회
+SELECT dept_id, SUM(salary)
+FROM employees
+GROUP BY dept_id
+HAVING SUM(salary) >= 150000000;
+
+
+-- WHERE dept_id
+-- employees E	departments D 연결
+-- 평균 급여가 8천만원 이상인 부서의 이름 조회
+SELECT dept_name, FLOOR(AVG(salary))
+FROM employees E
+INNER JOIN  departments D ON E.dept_id = D.dept_id
+GROUP BY dept_name
+HAVING AVG(salary) >= 80000000;
+
+SELECT D.dept_name, FLOOR(AVG(E.salary))
+FROM employees E, departments D
+WHERE E.dept_id = D.dept_id
+GROUP BY D.dept_name
+HAVING AVG(E.salary) >= 80000000;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 SELECT * FROM departments;
