@@ -169,12 +169,13 @@ HAVING SUM(salary) >= 150000000;
 -- WHERE dept_id
 -- employees E	departments D 연결
 -- 평균 급여가 8천만원 이상인 부서의 이름 조회
-SELECT dept_name, FLOOR(AVG(salary))
+SELECT D.dept_name, FLOOR(AVG(E.salary))
 FROM employees E
 INNER JOIN  departments D ON E.dept_id = D.dept_id
-GROUP BY dept_name
+GROUP BY D.dept_name
 HAVING AVG(salary) >= 80000000;
--- ==================================================================== 지정을 안해줘도 읽긴 하는데...? 조인으로 연결하게 되면 서로 찾는건지...? ===============
+
+
 
 SELECT D.dept_name, FLOOR(AVG(E.salary))
 FROM employees E, departments D
@@ -182,11 +183,6 @@ WHERE E.dept_id = D.dept_id
 GROUP BY D.dept_name
 HAVING AVG(E.salary) >= 80000000;
 
-SELECT dept_name, FLOOR(AVG(salary))
-FROM employees E, departments D
-WHERE D.dept_id = E.dept_id
-GROUP BY dept_name
-HAVING AVG(salary) >= 80000000;
 
 
 /***************************************************
