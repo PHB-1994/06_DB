@@ -26,14 +26,18 @@ GROUP BY dept_id;
 -- 부서 별 급여의 평균(정수처리 - 내림처리) as 급여 평균
 -- 인원 수 조회 as 인원 수
 -- 부서 ID 순으로 오름차순 정렬
-SELECT dept_id as '부서아이디', COUNT(*) as '인원 수', SUM(salary) as '급여 합계', FLOOR(AVG(salary)) as '급여 평균'
+SELECT dept_id as `부서아이디`,
+	COUNT(*) as `인원 수`,
+    SUM(salary) as `급여 합계`,
+    FLOOR(AVG(salary)) as `급여 평균`
 FROM employees
 GROUP BY `부서아이디`
-ORDER BY '부서아이디';
+ORDER BY `부서아이디`;
 
 -- 부서 ID 가 4, 5 인 부서의 평균 급여 조회 WHERE IN(    )
 -- SELECT dept_id, FLOOR(AVG(salary))
-SELECT dept_id as `부서아이디`, FLOOR(AVG(salary))
+SELECT dept_id as `부서아이디`,
+	FLOOR(AVG(salary))
 FROM employees
 WHERE dept_id IN(4, 5)
 GROUP BY `부서아이디`;
@@ -41,7 +45,8 @@ GROUP BY `부서아이디`;
 
 -- EMPLOYEES 테이블에서 직급 별 2020년도 이후 입사자들의 급여 합 조회
 -- position_id		YEAR(hire_date)		salary
-SELECT position_id, SUM(salary) as '급여 합'
+SELECT position_id,
+	SUM(salary) as '급여 합'
 FROM employees
 WHERE YEAR(hire_date) >= 2020
 GROUP BY position_id;
@@ -110,11 +115,57 @@ GROUP BY dept_id
 ORDER BY dept_id;
 
 
+/***************************
+WHERE 절 : 지정된 테이블에서 어떤 행만을 조회 결과로 삼을건지 조건을 지정하는 구문
+			(테이블 내에 특정 행만 뽑아서 쓰겠다는 조건문)
+            
+HAVING 절 : 그룹함수로 구해 올 그룹에 대한 조건을 설정할 때 사용
+			(그룹에 대한 조건, 어떤 그룹만 조회하겠다)
+
+HAVING 컬럼명 | 함수식 비교연선자 비교값
+***************************/
+
+USE employee_management;
+SELECT * FROM employees;
+
+-- 직원이 2명 이상인 부서보기
+SELECT dept_id, COUNT(*)
+FROM employees
+WHERE COUNT(*) >= 2; -- Error Code: 1111. Invalid use of group function
+-- 그룹 함수를 잘못 사용했을 때 나타나는 문제
+
+-- dept_id 로 묶은 그룹에서 총 인원이 2명 이상인 부서 아이디만 조회
+SELECT dept_id, COUNT(*)
+FROM employees
+GROUP BY dept_id
+HAVING COUNT(*) >= 2; 
+
+/*
+WHERE  : 개별 직원 조건
+급여가 5천만원 이상인 "직원" 찾기
+WHERE salary >= 50000000;
+
+HAVING : 부서나 그룹 조건
+평균 급여가 5천만원 이상인 "부서" 찾기
+HAVING AVG(salary) >= 50000000;
+
+GROPU BY HAVING = 함수(COUNT, AVG, SUM, MIN, MAX 등) 특정 그룹의 숫자 데이터를 활용해서 조건별로 조회할 때 사용
 
 
 
+*/
 
 
+SELECT * FROM departments;
+
+-- 부서에서 budget 평균이 30000000 이상인
+-- 부서를 조회하여 부서코드를 오름차순으로 정렬
+
+SELECT dept_code, budget
+FROM departments
+-- WHERE budget >= 30000000; -- 예산이 30000000 이상인 부서만 조회하겠다.
+GROUP BY dept_code
+HAVING AVG(budget) >= 30000000; -- 그룹 예산 평균이 30000000 이상인 부서만 조회
 
 
 
