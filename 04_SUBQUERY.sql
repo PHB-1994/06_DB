@@ -9,9 +9,9 @@ USE delivery_app;
 SELECT * FROM stores;
 
 
--- ============================
+-- =========================
 -- 1. 기본 서브쿼리 (단일행)
--- ============================
+-- =========================
 -- 가장 비싼 메뉴 찾기
 -- 1단계 : 최고 가격 찾기
 SELECT MAX(price) FROM menus; -- 38900원
@@ -229,3 +229,195 @@ WHERE category = '일식' AND delivery_fee < 3200;
 SELECT name, delivery_fee
 FROM stores
 WHERE category = '일식' AND delivery_fee < (SELECT avg(delivery_fee) FROM stores WHERE category = '한식' AND delivery_fee IS NOT NULL); 
+
+
+
+-- ===================================================================
+-- 2. 다중행 서브쿼리 (MULTI ROW SUBQUERY) N형 1열
+-- IN / NOT IN, > ANY / < ANY, > ALL / < ALL, EXISTS / NOT EXISTS 사용
+-- 주요 연산자 : IN, NOT IN, ANY, ALL, EXISTS
+-- ===================================================================
+
+-- 1. IN 연산자     - 가장 많이 사용되는 다중행 서브쿼리
+
+
+-- 인기 메뉴가 있는 매장들 조회
+-- 1단계 : 인기 메뉴가 있는 매장 ID 들 확인
+SELECT DISTINCT store_id
+FROM menus
+WHERE is_popular = TRUE;
+
+-- 2단계 : 인기있는 매장 id 들에 해당하는 매장 정보 찾기
+SELECT s.name, s.category, s.rating, s.id, m.store_id
+FROM stores s
+JOIN menus m ON s.id = m.store_id
+WHERE s.id IN(SELECT DISTINCT store_id FROM menus WHERE is_popular = TRUE);
+
+SELECT s.name, s.category, s.rating, s.id, m.store_id
+FROM stores s, menus m
+WHERE s.id = m.id
+AND s.id IN(SELECT DISTINCT store_id FROM menus WHERE is_popular = TRUE);
+
+
+-- 2. NOT IN 연산자 - 
+
+-- 인기 메뉴가 없는 매장들 조회
+-- name, category, rating
+-- 1단계 : 인기 메뉴가 있는 매장들 ID 확인
+-- 2단계 : 1단계를 조합하여 그 ID 들에 해당하지 않는 매장들 가져오기
+SELECT DISTINCT store_id
+FROM menus
+WHERE is_popular = TRUE;
+
+SELECT name, category, rating
+FROM stores
+WHERE id NOT IN(SELECT DISTINCT store_id FROM menus WHERE is_popular = TRUE);
+
+
+-- 치킨, 피자, 카테고리 매장들만 조회
+-- 1단계 : 치킨, 피자 카테고리 중복없이 확인
+-- 2단계 : WHERE category = '치킨' OR category = '피자' 이용해서 출력 확인
+-- 1 + 2 단계를 조합하여 가게이름, 카테고리, 평점 조회
+-- IN 사용
+-- FROM stores
+SELECT distinct name, category, rating
+FROM stores
+WHERE category IN('치킨','피자')
+ORDER BY category;
+
+
+-- 20000원 이상 메뉴를 파는 매장들을 조회
+
+-- 1단계 : 20000원 이상 메뉴를 가진 id 들 확인
+-- 2단계 : 1단계 결과를 조합하여 해당 매장들에 대한 정보 가져오기
+-- 			name, category, rating
+-- name 순으로 오름차순 정렬
+SELECT  DISTINCT s.name, s.rating, m.price
+FROM stores s, menus m
+WHERE s.id = m.store_id AND m.price >= 20000
+ORDER BY s.name;
+
+SELECT DISTINCT s.name, s.category, s.rating, m.price
+FROM stores s, menus m
+WHERE s.id = m.store_id IN(SELECT  DISTINCT s.name, m.price FROM stores s, menus m WHERE s.id = m.store_id AND m.price >= 20000)
+ORDER BY s.name;
+
+select * from stores;
+select * from menus;
+
+/**********************************************************
+           다중행 서브쿼리 실습문제 (1 ~ 10 문제)
+           IN / NOT IN 연산자
+***********************************************************/
+-- 문제 1: 카테고리별 최고 평점 매장들 조회
+-- 1단계: 카테고리별 최고 평점들 확인
+SELECT DISTINCT category, max(rating)
+FROM stores
+GROUP BY category;
+
+SELECT name, category, rating
+FROM stores
+WHERE category = (SELECT DISTINCT category, max(rating) FROM stores GROUP BY category);
+
+-- 2단계: 1단계 결과를 조합하여 각 카테고리의 최고 평점 매장들 가져오기
+
+
+
+-- 문제 2: 배달비가 가장 저렴한 매장들의 인기 메뉴들 조회
+-- 1단계: 가장 저렴한 배달비 매장 ID들 확인
+-- 2단계: 1단계 결과를 조합하여 해당 매장들의 인기 메뉴들 가져오기
+
+
+
+-- 문제 3: 평점이 가장 높은 매장들의 모든 메뉴들 조회
+-- 1단계: 가장 높은 평점 매장 ID들 확인
+-- 2단계: 1단계 결과를 조합하여 해당 매장들의 모든 메뉴들 가져오기
+
+
+
+-- 문제 4: 15000원 이상 메뉴가 없는 매장들 조회
+-- 1단계: 15000원 이상 메뉴를 가진 매장 ID들 확인
+-- 2단계: 1단계 결과에 해당하지 않는 매장들 가져오기
+
+
+
+-- 문제 5: 메뉴 설명이 있는 메뉴를 파는 매장들 조회
+-- 1단계: 메뉴 설명이 있는 메뉴를 가진 매장 ID들 확인
+-- 2단계: 1단계 결과를 조합하여 해당 매장들 정보 가져오기
+
+
+
+-- 문제 6: 메뉴 설명이 없는 메뉴만 있는 매장들 조회
+-- 1단계: 메뉴 설명이 있는 메뉴를 가진 매장 ID들 확인
+-- 2단계: 1단계 결과에 해당하지 않는 매장들 가져오기 (단, 메뉴가 있는 매장만)
+
+
+
+-- 문제 7: 치킨 카테고리 매장들의 메뉴들 조회
+-- 1단계: 치킨 카테고리 매장 ID들 확인
+-- 2단계: 1단계 결과를 조합하여 해당 매장들의 메뉴들 가져오기
+
+
+
+-- 문제 8: 피자 매장이 아닌 곳의 메뉴들만 조회
+-- 1단계: 피자 매장 ID들 확인
+-- 2단계: 1단계 결과에 해당하지 않는 매장들의 메뉴들 가져오기
+
+
+
+-- 문제 9: 평균 가격보다 비싼 메뉴를 파는 매장들 조회
+-- 1단계: 평균 가격보다 비싼 메뉴를 가진 매장 ID들 확인
+-- 2단계: 1단계 결과를 조합하여 해당 매장들 정보 가져오기
+
+
+
+-- 문제 10: 가장 비싼 메뉴를 파는 매장들 조회
+-- 1단계: 가장 비싼 메뉴를 가진 매장 ID들 확인
+SELECT max(price)
+FROM menus; -- 38900원
+
+SELECT store_id
+FROM menus
+WHERE price = 38900;
+
+SELECT store_id
+FROM menus
+WHERE price = (SELECT max(price) FROM menus);
+
+-- 2단계: 1단계 결과를 조합하여 해당 매장과 메뉴 정보 가져오기
+-- 		가게 아이디, 메뉴이름, 메뉴가격
+SELECT s.name, m.name, m.price
+FROM menus m, stores s
+WHERE  m.store_id = s.id
+AND price = (SELECT max(price) FROM menus);
+
+SELECT s.name, m.name, m.price
+FROM menus m, stores s
+WHERE s.id In(SELECT store_id
+				FROM menus
+				WHERE price = (SELECT max(price) FROM menus));
+                
+
+-- 4번 ~ 8번 난이도 중
+-- 1번 2번 9번 10번 난이도 상
+
+
+
+
+
+-- 3. ANY 연산자 - 
+
+
+-- 4. ALL 연산자 - 
+
+
+
+
+
+
+
+
+
+
+
+
