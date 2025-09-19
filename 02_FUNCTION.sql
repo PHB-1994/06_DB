@@ -219,3 +219,51 @@ SELECT * FROM employees;
 SELECT COUNT(*) as '남자 사원의 수'
 FROM employees
 WHERE gender = 'M';
+
+
+-- ^ 문자열 시작
+ -- 결과 : HI World
+SELECT regexp_replace('Hello World', '^Hello', 'Hi');
+ -- 결과 : HI Hello (첫 번째 Hello 만 Hi 로 변경됨)
+SELECT regexp_replace('Hello Hello', '^Hello', 'Hi');
+
+-- $ 문자열 끝
+-- 결과 : Hello MySQL
+SELECT regexp_replace('Hello World', 'World$', 'MySQL');
+-- 결과 : World Hello MySQL (마지막 World 만 MySQL 로 변경됨)
+SELECT regexp_replace('World Hello World', 'World$', 'MySQL');
+
+
+-- 결과 : HelloWorld!
+SELECT concat('Hello', 'World', '!');
+
+-- 결과 : Hello-World-!
+SELECT concat_ws('-', 'Hello', 'World', '!');
+
+-- 결과 : HELLO WORLD
+SELECT upper('Hello World');
+
+-- 결과 : hello world
+SELECT lower('Hello World');
+
+
+-- 결과 : Hello World.
+SELECT trim('     Hello World     ');
+
+-- 결과 : Hello World.
+SELECT trim('x' FROM 'xxxxxHello Worldxxxxx');
+
+-- 결과 : Hello World     .
+SELECT ltrim('     Hello World     ');
+
+-- 결과 :      Hello World.
+SELECT rtrim('     Hello World     ');
+
+
+
+
+
+
+
+
+
