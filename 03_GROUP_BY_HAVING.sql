@@ -153,12 +153,12 @@ HAVING AVG(salary) >= 50000000;
 GROPU BY HAVING = 함수(COUNT, AVG, SUM, MIN, MAX 등) 특정 그룹의 숫자 데이터를 활용해서 조건별로 조회할 때 사용
 */
 
--- 평균 급여가 8천만원 이상인 부서 조회
+-- 평균 급여가 7천만원 이상인 부서 조회
 -- dept_id, salary employees
 SELECT dept_id, FLOOR(AVG(salary))
 FROM employees
 GROUP BY dept_id
-HAVING AVG(salary) >= 80000000;
+HAVING AVG(salary) >= 70000000;
 
 -- 급여 총합이 1억 5천만원 이상인 부서 조회
 SELECT dept_id, SUM(salary)
@@ -171,19 +171,17 @@ HAVING SUM(salary) >= 150000000;
 -- employees E	departments D 연결
 -- 평균 급여가 8천만원 이상인 부서의 이름 조회
 SELECT D.dept_name, FLOOR(AVG(E.salary))
-FROM employees E
-INNER JOIN  departments D ON E.dept_id = D.dept_id
-GROUP BY D.dept_name
-HAVING AVG(salary) >= 80000000;
-
-
-
-SELECT D.dept_name, FLOOR(AVG(E.salary))
 FROM employees E, departments D
 WHERE E.dept_id = D.dept_id
 GROUP BY D.dept_name
 HAVING AVG(E.salary) >= 80000000;
 
+
+SELECT D.dept_name, FLOOR(AVG(E.salary))
+FROM employees E
+INNER JOIN  departments D ON E.dept_id = D.dept_id
+GROUP BY D.dept_name
+HAVING AVG(salary) >= 80000000;
 
 
 /***************************************************
@@ -216,8 +214,6 @@ menus(메뉴 테이블)
 id      , store_id,   name, price, is_popular
 ***************************************************/
 
-SELECT * FROM stores;
-SELECT * FROM menus;
 -- stores 테이블에서
 -- 각 카테고리 별로 가게가 몇개씩 존재하는지 확인하기
 -- select category as 가게수
@@ -238,15 +234,19 @@ GROUP BY category;
 # 실습문제
 -- from stores
 -- 평점임 4.5 이상인 가게들만 골라서 카테고리별 개수 구하기
+-- 치킨 카테고리에서 가게별로 4.5 이상인 가게들만 조회하기
 SELECT  category, COUNT(*)
 FROM stores
-WHERE rating >= 4.5 -- 치킨 카테고리에서 가게별로 4.5 이상인 가게들만 조회하기
+WHERE rating >= 4.5 
 GROUP BY category;
 
+
+-- 카테고리별로 평점을 모은 후에 
+-- 평점이 4.5 이상으로 그룹만 카테고리 조회
 SELECT  category, COUNT(*)
 FROM stores
 GROUP BY category
-HAVING AVG(rating) >= 4.5; -- 카테고리별로 평점을 모은 후에 평점이 4.5 이상으로 그룹만 카테고리 조회
+HAVING AVG(rating) >= 4.5; 
 /*
 1064  : , 가 포함되어 있다
 0	87	14:38:35	SELECT name, category, rating
@@ -290,13 +290,18 @@ ORDER BY AVG(delivery_fee);
 SELECT s.name, s.category, COUNT(*) as 메뉴개수
 FROM stores s, menus m
 WHERE s.id = m.store_id
-GROUP BY s.name, s.category;
+GROUP BY s.id;
 
 
+SELECT menus.id, menus.store_id, menus.name, menus.description, menus.price, menus.is_popular
+FROM menus, stores
+WHERE menus.store_id = stores.id;
 
 
-
-
+SELECT stores.category, COUNT(*)
+FROM menus, stores
+WHERE menus.store_id = stores.id
+GROUP BY stores.category;
 
 
 
