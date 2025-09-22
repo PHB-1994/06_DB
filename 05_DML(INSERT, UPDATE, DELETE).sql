@@ -311,6 +311,29 @@ SET SQL_SAFE_UPDATES = 1;
 
 select * from member;
 
+-- 문제 1: username이 'mike_wilson'인 이철수 회원의 이메일 주소를 'mike.w@naver.com'으로 변경하세요.
+UPDATE member
+	SET email = 'mike.w@naver.com'
+WHERE username = 'mike_wilson';
+
+select * from member WHERE username = 'mike_wilson';
+
+-- 문제 2: member_id가 3번인 회원의 상태(status)를 'SUSPENDED'로, 주소(address)를 '확인 필요'로 변경하세요.
+UPDATE member
+	SET status = 'SUSPENDED',
+		address = '확인 필요'
+WHERE member_id = 3;
+
+select * from member WHERE member_id = 3;
+
+-- 문제 3: 1990년 이전에 태어난 모든 회원의 상태(status)를 'INACTIVE'로 변경하세요.
+UPDATE member
+	SET status = 'INACTIVE'
+WHERE YEAR(birth_date) < 1990;
+
+select * from member WHERE birth_date < '1990-01-01';
+
+
 
 
 
