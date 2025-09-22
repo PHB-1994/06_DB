@@ -134,26 +134,52 @@ GROUP BY menu_name;
 
 -- 문제 19
 -- 전체 고객 수와 전화번호가 등록된 고객 수를 각각 구하시오.
-SELECT customer_id, count(*)
+SELECT  count(*) AS 전체고객수, COUNT(*) AS '전화번호가 등록된 고객 수'
 FROM customers
-GROUP BY customer_id;
+WHERE phone IS NOT NULL;
 
-select * from customers;
 
 -- 문제 20
 -- 카테고리별로 중복을 제거한 가게 수를 조회하시오.
+SELECT c.category_name, COUNT(DISTINCT s.store_id) as 가게수
+FROM categories c
+JOIN stores s ON c.category_id = s.category_id
+GROUP BY c.category_name;
+
 
 -- 문제 21
 -- 가게별로 메뉴 개수와 평균 메뉴 가격을 조회하시오. (가게명 포함)
+SELECT s.store_name, COUNT(m.menu_id) AS 메뉴개수, AVG(m.price) AS 평균가격
+FROM stores s
+JOIN menus m ON s.store_id = m.store_id
+GROUP BY s.store_name; 
+
 
 -- 문제 22
 -- 카테고리별로 가게 수, 평균 평점, 평균 배달비를 조회하시오. (배달비가 NULL이 아닌 경우만)
+SELECT c.category_name, COUNT(s.store_id) AS 가게수, AVG(s.rating) AS 평균평점, AVG(s.delivery_fee) AS 평균배달비
+FROM categories c
+JOIN stores s ON c.category_id = s.category_id
+WHERE s.delivery_fee IS NOT NULL
+GROUP BY c.category_name;
+
 
 -- 문제 23
 -- 고객별로 총 주문 횟수와 총 주문금액을 조회하시오. (고객명 포함)
+SELECT c.customer_name, COUNT(c.customer_id) AS 총주문횟수, SUM(o.total_price) AS 총주문금액
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name;
+
+-- COUNT(o.order_id) // COUNT(c.customer_id) 왜 같은지???
+
 
 -- 문제 24
 -- 주문 상태별로 주문 건수와 평균 주문금액을 조회하시오.
+SELECT order_status AS 주문상태, COUNT(*) AS 주문건수, AVG(total_price) AS 평균주문금액
+FROM orders 
+GROUP BY order_status;
+
 
 -- 문제 25
 -- 가게별 인기메뉴 개수와 일반메뉴 개수를 각각 구하시오.
@@ -166,15 +192,62 @@ GROUP BY 가게테이블.store_name;
 
 -- 문제 26
 -- 메뉴가 3개 이상인 가게들의 가게명과 메뉴 개수를 조회하시오.
+SELECT store_name, COUNT(m.menu_id) AS 메뉴개수
+FROM stores s
+JOIN menus m ON s.store_id = m.store_id
+GROUP BY s.store_name, s.store_id
+HAVING COUNT(m.menu_id) >= 3;
+
 
 -- 문제 27
 -- 평균 메뉴 가격이 15000원 이상인 가게들을 조회하시오. (가게명, 평균가격)
+SELECT s.store_name, AVG(m.price) AS 평균가격
+FROM stores s 
+JOIN menus m ON s.store_id = m.store_id
+GROUP BY s.store_name, s.store_id
+HAVING AVG(m.price) >= 15000;
+
 
 -- 문제 28
 -- 총 주문금액이 30000원 이상인 고객들의 고객명과 총 주문금액을 조회하시오.
+SELECT c.customer_name, SUM(o.total_price) as 총주문금액
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_name, c.customer_id
+HAVING SUM(o.total_price) >= 30000;
+
 
 -- 문제 29
 -- 배달비 평균이 3500원 이상인 카테고리들을 조회하시오. (배달비가 NULL이 아닌 경우만)
+SELECT c.category_name, AVG(s.delivery_fee) AS 평균배달비
+FROM categories c
+JOIN stores s ON c.category_id = s.category_id
+WHERE s.delivery_fee IS NOT NULL
+GROUP BY c.category_name, c.category_id
+HAVING AVG(s.delivery_fee) >= 3500;
+
 
 -- 문제 30
 -- 주문 건수가 2건 이상인 주문 상태들과 해당 건수, 총 주문금액을 조회하시오. 총 주문금액 기준으로 내림차순 정렬하시오.
+SELECT order_status, COUNT(order_id) AS 해당건수, SUM(total_price) AS 총주문금액
+FROM orders
+GROUP BY order_status
+HAVING COUNT(order_id) >= 2
+ORDER BY SUM(total_price) DESC;
+
+
+SELECT order_status, COUNT(*) as 주문건수, SUM(total_price) as 총주문금액
+FROM orders
+GROUP BY order_status
+HAVING COUNT(*) >= 2
+ORDER BY SUM(total_price) DESC;
+
+select * from customers;
+select * from categories;
+select * from stores;
+select * from menus;
+select * from reviews;
+select * from orders;
+select * from order_items;
+
+
