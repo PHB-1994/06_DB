@@ -41,7 +41,7 @@ INSERT INTO member
         NOW(),					-- join-date  가입일자 현재시간기준
         'ACTIVE'				-- status	  탈퇴, 휴면계정 여부
         );
-
+        
 select * from member;
 
 
@@ -92,15 +92,22 @@ INSERT INTO member
 -- 컬럼명칭 옆에 NOT NULL 인 컬럼명칭만 지정하여 데이터를 넣을 수 있음
 -- 주의할 점 : NOT NULL 은 필수로 데이터를 넣어야하는 공간이기 때문에 생략할 수 없음
 
+-- 하나의 INSERT 구문 추가하는 방법
+-- INSERT INTO 테이블이름 (필수컬럼명1, 필수컬럼명2, 필수컬럼명3, ...)
+-- 		  			VALUES (데이터3, 데이터3, 데이터3, ...),
+
+-- 두개 이상의 INSERT 구문 추가하는 방법
 -- INSERT INTO 테이블이름 (필수컬럼명1, 필수컬럼명2, 필수컬럼명3, ...)
 -- 		  VALUES (데이터1, 데이터1, 데이터1, ...),
 -- 		  VALUES (데이터2, 데이터2, 데이터2, ...),
 -- 		  VALUES (데이터3, 데이터3, 데이터3, ...),
-
--- INSERT INTO 테이블이름 (필수컬럼명1, 필수컬럼명2, 필수컬럼명3, ...)
--- 		  			VALUES (데이터3, 데이터3, 데이터3, ...),
 -- , 로 구분하여 여러 행을 한 번에 입력 후, 데이터를 저장할 수 있다
+-- AUTO_INCREMENT 가 설정된 컬럼은 번호가 자동으로 부여될 것이고,
+-- 이외 컬럼데이터는 모두 NULL 이나 0 의 값으로 데이터가 추가될 것이다.
+-- 여기서 DEFAULT 설정된 데이터는 DEFAULT 로 설정된 기본 데이터가 추가될 것이다.
 -- =================================================
+
+
 
 -- =============================================
 -- 실습 문제 1: 필수 컬럼만 INSERT
@@ -124,8 +131,27 @@ INSERT INTO member (username, password, email, name)
 select * from member;
 
 
+-- =================================================
+-- INSERT INTO 테이블명 (컬럼명, ...) VALUES(데이터, ...)
+-- 특정 컬럼만 지정하여 데이터 저장 (필수 + 선택사항)
+-- =================================================
 
-
+INSERT INTO member (username, password, email, name, phone, gender)
+			VALUES('admin_user', 'admin_pass', 'admin@gemail.com', '관리자', '010-4689-1357', 'M');
+            
+INSERT INTO member (password,     username,          email,           phone,        name,  gender)
+			VALUES('guest_pass1', 'guest_user1', 'guest1@gmail.com', '게스트1','010-2222-8888','F');
+            
+INSERT INTO member (password,     username,          email,               phone,        name,  gender)
+			VALUES('guest_pass2', 'guest_user2', 'guest2@gmail.com', '010-3333-7777', '게스트2', 'F');
+            
+-- =================================================
+-- INSERT INTO 로 데이터 저장하는 작업을 할 때
+-- 컬럼명칭과 넣고자 하는 데이터 값이 일치하면 넣는데 문제가 없음
+-- 데이터 일치의 기준은 컬럼명칭에 작성된 자료형, 자료형 크기가 기준
+-- =================================================
+            
+select * from member;
 
 
 
