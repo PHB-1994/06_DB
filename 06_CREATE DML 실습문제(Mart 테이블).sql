@@ -202,11 +202,11 @@ CREATE TABLE IF NOT EXISTS projects (
 */
 INSERT INTO employees
 VALUES
-(NULL, '김철수', 'IT', '팀장', '5000000', '2023-01-15', 'kim.cs@company.com', '010-1111-2222', NULL, NOW(), NOW()),
-(NULL, '이영희', 'HR', '대리', '4000000', '2023-03-20', 'lee.yh@company.com', '010-3333-4444 ', NULL, NOW(), NOW()),
-(NULL, '박민수', 'FINANCE', '과장', '5500000', '2022-11-10', 'park.ms@company.com', '010-5555-6666', NULL, NOW(), NOW());
+(NULL, '김철수', 'IT', '팀장', '5000000', '2023-01-15', 'kim.cs@company.com', '010-1111-2222', FALSE, NOW(), NOW()),
+(NULL, '이영희', 'HR', '대리', '4000000', '2023-03-20', 'lee.yh@company.com', '010-3333-4444 ', FALSE, NOW(), NOW()),
+(NULL, '박민수', 'FINANCE', '과장', '5500000', '2022-11-10', 'park.ms@company.com', '010-5555-6666', FALSE, NOW(), NOW());
 
-
+DROP TABLE employees;
 -- 문제 2-2: projects 테이블에 다음 프로젝트들을 INSERT하세요.
 /*
 프로젝트1: 웹사이트 리뉴얼, 매니저ID: 1, 예산: 50000000, 시작일: 2024-01-01, 종료일: 2024-06-30, 상태: IN_PROGRESS
@@ -258,7 +258,7 @@ VALUES('홍길동', 'IT', '사원', '2024-09-01', 'hong.gd@company.com', (SELECT
 
 SET @평균급여 = (SELECT AVG(salary) FROM employees);
 INSERT INTO employees(emp_name, department, position, hire_date, email, salary)
-VALUES('홍길동', 'IT', '사원', '2024-09-01', 'hong.gd@company.com',    );
+VALUES('홍길동', 'IT', '사원', '2024-09-01', 'hong.gd@company.com', @평균급여);
 
 
 -- 문제 3-2: projects 테이블에 새 프로젝트를 추가하는데,
@@ -267,10 +267,15 @@ VALUES('홍길동', 'IT', '사원', '2024-09-01', 'hong.gd@company.com',    );
 프로젝트명: AI 챗봇 개발, 예산: 120000000, 시작일: 2024-10-01, 종료일: 2025-03-31, 상태: PLANNING
 매니저ID: IT 부서에서 급여가 가장 높은 직원의 ID
 */
-SELECT MAX(budget);
 
-select * from employees;
-select * from projects;
+SELECT MAX(salary) FROM employees WHERE department = 'IT';
+
+SET @직원아이디 = (SELECT emp_id FROM employees WHERE department = 'IT' AND salary = (SELECT MAX(salary) FROM employees WHERE department = 'IT'));
+
+-- SET 해서 변수명칭으로 사용하는 것은 INSERT 와 UPDATE 에서 주로 사용
+INSERT INTO projects(project_name, manager_id, budget, start_date, end_date, status)
+VALUES('AI 챗봇 개발', @직원아이디, 120000000, '2024-10-01', '2025-03-31', 'PLANNING');
+
 
 -- 문제 3-3: employees 테이블에 새 직원을 추가하는데,
 -- hire_date는 가장 최근에 입사한 직원의 입사일로 설정하세요.
@@ -278,20 +283,34 @@ select * from projects;
 직원명: 윤서연, 부서: HR, 직급: 사원, 급여: 3800000, 이메일: yoon.sy@company.com
 입사일: 가장 최근 입사 직원의 입사일과 동일하게 설정
 */
+SET @마지막입사자 = (SELECT max(hire_date) FROM employees); -- 변수이름 : 마지막입사자
+
+INSERT INTO employees(emp_name, department, position, salary, hire_date, email)
+VALUES('윤서연', 'HR', '사원', '3800000', @마지막입사자, 'yoon.sy@company.com');
 
 
 -- ========================================
 -- 4. UPDATE
 -- ========================================
 -- 문제 4-1: IT 부서 직원들의 급여를 10% 인상하세요.
+SELECT salary FROM employees WHERE department = 'IT';
+
+UPDATE employees
+SET salary = salary * 1.1
+WHERE department = 'IT';
 
 
 -- 문제 4-2: 김철수 직원의 직급을 '부장'으로, 급여를 6000000으로 변경하세요.
-
+UPDATE employees
+SET position = '부장',
+	salary = 6000000
+WHERE emp_name = '김철수';
 
 
 -- 문제 4-3: 2023년에 입사한 모든 직원의 부서를 'TRAINING'으로 변경하세요.
-
+UPDATE employees
+SET department = 'TRAINING'
+WHERE hire_date LIKE '2023%';
 
 
 -- ========================================
@@ -299,14 +318,35 @@ select * from projects;
 -- ========================================
 -- 문제 5-1: FINANCE 부서의 모든 직원 급여를 
 -- 전체 직원의 평균 급여로 업데이트하세요.
+SELECT AVG(salary) FROM employees WHERE department = 'FINANCE'; -- 5500000
+SELECT AVG(salary) FROM employees; -- 4658000
 
+SET @전체직원의평균급여 = (SELECT AVG(salary) FROM employees);
 
+UPDATE employees
+SET salary = @전체직원의평균급여
+WHERE department = 'FINANCE';
+
+UPDATE employees 
+SET salary = (SELECT AVG(salary) FROM (SELECT salary FROM employees) AS temp)
+WHERE department = 'FINANCE';
 
 -- 문제 5-2: 각 부서에서 가장 높은 급여를 받는 직원의 직급을 '팀장'으로 변경하세요.
+SELECT department, MAX(salary)
+FROM employees
+GROUP BY department;
 
+UPDATE employees e1
+SET position = '팀장'
+WHERE salary = (SELECT MAX(salary) FROM (SELECT * FROM employees) AS e2 WHERE e2.department = e1.department);
 
+select * from employees;
+select * from projects;
 
 -- 문제 5-3: 'COMPLETED' 상태인 프로젝트의 매니저들의 급여를 20% 인상하세요.
+UPDATE employees 
+SET salary = salary * 1.2 
+WHERE emp_id IN (SELECT manager_id FROM projects WHERE status = 'COMPLETED');
 
 
 
@@ -315,11 +355,22 @@ select * from projects;
 -- ========================================
 
 -- 문제 6-1: 재직하지 않는 직원(is_active = FALSE)들을 삭제하세요.
-
+DELETE
+FROM employees
+WHERE is_active = FALSE;
 
 
 -- 문제 6-2: 급여가 3000000 미만이고 2024년 이전에 입사한 직원들을 삭제하세요.
-
+DELETE
+FROM employees
+WHERE salary < 3000000 AND YEAR(hire_date) < 2024;
 
 
 -- 문제 6-3: 'CANCELLED' 상태인 프로젝트들을 모두 삭제하세요.
+DELETE
+FROM projects
+WHERE status = 'CANCELLED';
+
+
+select * from employees;
+select * from projects;
