@@ -69,10 +69,10 @@ WHERE customer_id = 1;
 
 
 -- 문제 9
--- 'BHC치킨 역삼점' 매장의 배달비를 2500원으로, 최소주문금액을 15000원으로 변경하시오.
+-- 'BHC치킨 역삼점' 매장의 배달비를 2500원으로
+-- 최소주문금액을 15000원으로 변경하시오.
 UPDATE stores
-	SET delivery_fee = '2500',
-		min_order_amount = 15000
+	SET delivery_fee = '2500', min_order_amount = 15000
 WHERE store_name = 'BHC치킨 역삼점';
 
 
