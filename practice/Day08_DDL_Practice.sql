@@ -1,7 +1,7 @@
 -- 1. 데이터베이스 생성 및 사용
 -- 힌트: CREATE DATABASE, USE
-CREATE DATABASE practice_db;
-USE practice_db;
+CREATE DATABASE BOOK;
+USE BOOK;
 
 DROP TABLE BOOK;
 DROP TABLE CUSTOMER;
