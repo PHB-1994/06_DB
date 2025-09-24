@@ -159,11 +159,3 @@ ALTER TABLE department DROP COLUMN create_date;
 
 -- 특정 컬럼의 명칭 변경 RENAME TO
 ALTER TABLE department RENAME COLUMN dept_title TO dept_name;
-
-select * from department;
-
-
-
-
-
-
