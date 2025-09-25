@@ -41,6 +41,9 @@ SAVEPOINT : 트랜잭션 내에 저장 지점을 정의하며, ROLLBACK 수행 �
 복잡하고 긴 작업 중 일부만 되돌리고 싶을 때 SAVEPOINT 사용해서 중간지점까지 되돌리기
 */
 -- ==============================================
+DROP TABLE IF EXISTS bookings;
+DROP TABLE IF EXISTS events; -- 만드는 것은 events 먼저였으나 외래키로 인하여 bookings 먼저 삭제해주기
+DROP TABLE IF EXISTS attendees;
 
 
 CREATE TABLE events (
@@ -100,19 +103,48 @@ SELECT * FROM bookings;
 -- 박영희씨가 클래스 예약을 시도했지만 좌석이 없어서 실패한 시나리오
 -- ROLLBACK;
 
-START TRANSACTION; -- commit 하기 전까지 유효. 어디서부터 어디까지 흐름 추적하고
+-- CTRL + S 는 저장하기와 동시에 COMMIT 상태로 저장됨
+-- commit 하기 전까지 유효. 어디서부터 어디까지 흐름 추적하고
 -- COMMIT 저장 완료되면 추적을 중단하겠다.
+START TRANSACTION;
+INSERT INTO attendees VALUES(2, '박영희','hee_park@gmail.com');
+SELECT * FROM attendees;
+ROLLBACK;
 
-INSERT INTO attendees
-VALUES(2, '박영희','hee_park@gmail.com');
+
+-- 일부만 성공 savepoing
+-- 담당자가 이민준과 최지아의 예약을 동시에 진행하지만 좌석은 1개뿐이기 때문에
+-- 이민준 성공 최지아 실패!
+
+-- 이민준 예약 성공 직후 savapoing 중간 저장 해두기
+-- 최지아 예약 실패 시 그 중간 저장 지점으로 되돌아가서 이민준의 예약만 살리기
+
+START TRANSACTION;
+INSERT INTO attendees VALUES(3, '이민준','hee_park@gmail.com');
+SELECT * FROM attendees;
+
+-- 예약하고자 하는 클래스는 동일하므로 수정안함
+UPDATE events
+SET available_seats = available_seats -1 -- available_seats 예약가능좌석 1개 출소
+WHERE event_id = 1;
+
+-- 예약자 아이디만 수정
+INSERT INTO bookings (event_id, attendee_id)
+VALUES (1,3);
+
+SAVEPOINT booking_joon_ok;
+
+INSERT INTO attendees VALUES(4, '최지아','jia@gmail.com');
+
+
+-- 좌석을 주려 했지만 0 개라 실패 박철수씨와 이민준씨가 이미 좌석 예약 완료한 상태
+
+-- 중간 저장 지점인 이민준 성공으로 돌아가기
+ROLLBACK TO SAVEPOINT booking_joon_ok;
+
+-- 이민준씨의 예약이 완료된 시점에서 최종 확정
+COMMIT;
 
 SELECT * FROM attendees;
 
-
-
-
-
-
-
-
-
+-- 확인 결과 : 이민준 예약은 완료되었지만, 최지아의 정보는 롤백되어 남아있지 않는다.
