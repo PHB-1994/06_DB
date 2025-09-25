@@ -43,7 +43,70 @@ SAVEPOINT : 트랜잭션 내에 저장 지점을 정의하며, ROLLBACK 수행 �
 -- ==============================================
 
 
+CREATE TABLE events (
+    event_id INT PRIMARY KEY AUTO_INCREMENT,
+    event_name VARCHAR(100) NOT NULL,
+    total_seats INT NOT NULL,
+    available_seats INT NOT NULL 
+);
 
+CREATE TABLE attendees (
+    attendee_id INT PRIMARY KEY AUTO_INCREMENT,
+    attendee_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE bookings (
+    booking_id INT PRIMARY KEY AUTO_INCREMENT,
+    event_id INT NOT NULL,
+    attendee_id INT NOT NULL,
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES events(event_id),
+    FOREIGN KEY (attendee_id) REFERENCES attendees(attendee_id)
+);
+
+INSERT INTO events (event_name, total_seats, available_seats) 
+VALUES ('SQL 마스터 클래스', 100, 2); 
+
+
+START TRANSACTION; -- 이제부터는 수동 저장?
+INSERT INTO attendees
+VALUES(1, '김철수','culsoo@gmail.com');
+
+-- SQL 마스터 클래스 이벤트의 남은 좌석 1개를 줄이기
+-- 김철수씨가 예약
+UPDATE events
+SET available_seats = available_seats -1 -- available_seats 예약가능좌석 1개 출소
+WHERE event_id = 1;
+
+
+-- 주의 : select 에서 데이터가 제대로 보인다하여 commit 이 무조건 완성된 것은 아님
+-- SQL 에서 보이더라도 자동커밋이 아닐 때는 Java 에서 데이터 불러오기를 했을 때
+-- 저장된 데이터가 불러오지 않을 수도 있음
+-- 지금 database 자체가 아니라 database에 데이터를 명시하는 schemas 명세상태임
+-- Java 는 schemas 가 아니라 database 랑 상호소통한다.
+
+
+-- 김철수 id : 1 이 SQL 마스터 클래스를 예약했다는 최종 내역을 저장
+INSERT INTO bookings (event_id, attendee_id)
+VALUES (1,1);
+
+COMMIT; -- 김철수씨의 예약을 모두 확정하는 단계. 예약이 잘 완료되고, 좌석도 무사히 줄었다.
+
+SELECT * FROM attendees;
+SELECT * FROM events;
+SELECT * FROM bookings;
+
+-- 박영희씨가 클래스 예약을 시도했지만 좌석이 없어서 실패한 시나리오
+-- ROLLBACK;
+
+START TRANSACTION; -- commit 하기 전까지 유효. 어디서부터 어디까지 흐름 추적하고
+-- COMMIT 저장 완료되면 추적을 중단하겠다.
+
+INSERT INTO attendees
+VALUES(2, '박영희','hee_park@gmail.com');
+
+SELECT * FROM attendees;
 
 
 
