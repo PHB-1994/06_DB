@@ -176,16 +176,51 @@ INSERT INTO product VALUES
 (2, '마우스', 50000, 'IT'),
 (3, '책상', 300000, '가구');
 
+-- UPDATE 는 컬럼 내에 존재하는 데이터           변경
+-- ALTER 는  컬럼 내에 존재하는 데이터 이외 모든 변경
+-- 				  ADD	 : 속성, 컬럼 추가
+-- 				  MODIFY : 이미 존재하는 컬럼에 속성 추가 제약조건 변경 추가
+
 -- 문제 1: employee 테이블의 emp_id 컬럼을 PRIMARY KEY로 설정
+-- primary key 는 둘 다 모두 가능
+ALTER TABLE employee ADD PRIMARY KEY(emp_id);
+ALTER TABLE employee MODIFY emp_id INT PRIMARY KEY;
+DROP TABLE employee;
+-- ALTER TABLE employee MODIFY emp_id INT PRIMARY KEY; -- 이미 기본 키가 설정되어 있는데, 다시 기본키를 설정하려 했기 때문에 발생
+
 -- 문제 2: employee 테이블의 email 컬럼에 NOT NULL 제약조건 추가
+ALTER TABLE employee MODIFY email VARCHAR(30) NOT NULL; -- MODIFY 는 제약조건 설정할 때 자료형(자료형크기) 반드시 설정
+
 -- 문제 3: product 테이블의 product_name 컬럼에 NOT NULL 제약조건 추가
+ALTER TABLE product MODIFY product_name VARCHAR(50) NOT NULL;
+
 -- 문제 4: employee 테이블에 bonus 컬럼을 DECIMAL(3,2) 타입으로 추가
+ALTER TABLE employee ADD bonus DECIMAL(3,2);
+
 -- 문제 5: product 테이블에 stock_quantity 컬럼을 INT 타입으로 추가, 기본값 0
+ALTER TABLE product ADD stock_quantity INT DEFAULT 0;
+
 -- 문제 6: employee 테이블의 phone 컬럼을 VARCHAR(15) 타입으로 수정
+ALTER TABLE employee MODIFY phone VARCHAR(15);
+
 -- 문제 7: employee 테이블의 salary 컬럼을 BIGINT 타입으로 수정
+ALTER TABLE employee MODIFY salary BIGINT;
+-- ALTER TABLE employee ADD salary BIGINT; 추가이므로 안됨!!
+
 -- 문제 8: product 테이블의 price 컬럼을 DECIMAL(10,2) 타입으로 수정
+ALTER TABLE product MODIFY price DECIMAL(10,2);
+
 -- 문제 9: employee 테이블의 emp_no 컬럼명을 social_no로 변경
+ALTER TABLE employee RENAME COLUMN emp_no TO social_no로;
+
 -- 문제 10: product 테이블에서 stock_quantity 컬럼 삭제
+ALTER TABLE product DROP COLUMN stock_quantity;
+
 -- 문제 11: product 테이블의 product_id를 PRIMARY KEY로 설정
+ALTER TABLE product MODIFY product_id INT PRIMARY KEY;
+
 -- 문제 12: category 컬럼에 CHECK 제약조건 추가
+ALTER TABLE product ADD CHECK(category IN('IT', '가구'));
+
 -- 문제 13: description 컬럼을 TEXT 타입으로 추가
+ALTER TABLE product ADD description TEXT;product
