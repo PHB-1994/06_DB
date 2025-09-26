@@ -199,6 +199,12 @@ DROP DATABASE 스노우;
 -- sys 삭제 금지
 
 
+USE tje;
+
+SET FOREIGN_KEY_CHECKS = 0;
+-- 내부 데이터만 모두 삭제
+TRUNCATE TABLE brands;
+SELECT * FROM brands;
 
 
 
