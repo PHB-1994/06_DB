@@ -64,7 +64,8 @@ REVOKE SELECT, INSERT, UPDATE ON tje.* FROM 'network_user'@'192.168.1.%';
 GRANT ALL privileges ON *.* TO 'remote_user'@'%';
 
 -- 권한 회수
-REVOKE ALL privileges ON *.* FROM 'remote_user'@'%';
+-- REVOKE ALL privileges ON *.* FROM 'remote_user'@'%';
+REVOKE ALL privileges , grant option from 'remote_user'@'%';
 
 -- 모든 권한을 준 후 권한 적용 안하면 GRANT로 부여한 권한이 의미 없어짐
 FLUSH privileges;
